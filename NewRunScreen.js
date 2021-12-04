@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import * as Location from 'expo-location';
 import { getDistance } from './utils';
+import Timer from './components/Timer';
 
 export default function NewRunScreen() {
   const [route, setRoute] = useState([]);
@@ -18,10 +19,10 @@ export default function NewRunScreen() {
         return;
       }
 
-      locationSubscription = await Location.watchPositionAsync({accuracy: Location.Accuracy.BestForNavigation, timeInterval: 5000}, locationUpdated);
+      locationSubscription = await Location.watchPositionAsync({accuracy: Location.Accuracy.BestForNavigation, distanceInterval: 5}, locationUpdated);
     })();
 
-    () => {
+    return () => {
       locationSubscription.remove();
     }
 
@@ -38,6 +39,10 @@ export default function NewRunScreen() {
                   route[route.length - 2]["longitude"] );
         
       setTotalDistance(totalDistance => totalDistance + distBetweenLastPoints)
+    }
+    return ()=> {
+      //temporary - when component is unmounted make route an empty array.
+      
     }
   }, [route])
 
@@ -61,10 +66,10 @@ export default function NewRunScreen() {
 
     setSpeed(locObject.coords.speed);
 
-    console.log(typeof(route))
   }
 
   const endRun = () => {
+    console.log(JSON.stringify(route))
     locationSubscription.remove();
   }
 
@@ -79,6 +84,7 @@ export default function NewRunScreen() {
     <View style={styles.container}>
       <Text style={styles.paragraph}>{Math.round((speed * 2.2369) * 100) / 100} mph</Text>
       <Text>Distance Travelled: {route ? totalDistance : 0} miles</Text>
+      <Timer />
       <Button title="End Run" onPress={endRun}/>
     </View>
   );

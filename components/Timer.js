@@ -15,7 +15,7 @@ const Timer = () => {
     }, [])
 
     return (
-        <View style={styles.container}>
+        <View>
             <Text>Time: {seconds}</Text>
         </View>
     )
@@ -24,8 +24,6 @@ const Timer = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
   });
 

@@ -3,12 +3,23 @@ import React, {useState, useEffect} from 'react';
 import { Button, StyleSheet, Text, View, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import NewRunScreen from './NewRunScreen';
-import Timer from './components/Timer';
 import PreviousRun from './components/PreviousRun';
+import { myFirebase } from './firebaseConfig';
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite'
 
 export default function App() {
 
   const [running, setRunning] = useState(false);
+
+  useEffect(async () => {
+    const db = getFirestore(myFirebase);
+    const colectionRef = collection(db, 'runs')
+    const snapshot = await colectionRef.getDocs();
+    console.log(snapshot);
+    return () => {
+      cleanup
+    }
+  }, [])
 
   const toggleRun = () => {
     setRunning(!running);
@@ -19,7 +30,6 @@ export default function App() {
     <View style={styles.container}>
       <View style={styles.upperView}>
         {running ? <NewRunScreen /> : <PreviousRun /> } 
-        <Timer />
       </View>
       <View style={styles.lowerView}>
         <Pressable onPress={toggleRun} >
