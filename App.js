@@ -16,6 +16,7 @@ export default function App() {
     const colectionRef = collection(db, 'runs')
     const snapshot = await colectionRef.getDocs();
     console.log(snapshot);
+    //testing commit for github
     return () => {
       cleanup
     }
