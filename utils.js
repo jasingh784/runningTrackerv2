@@ -1,5 +1,6 @@
 // JavaScript program to calculate Distance Between
 // Two Points on Earth
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function getDistance(lat1, lat2, lon1, lon2) {
 
@@ -28,3 +29,24 @@ export function getDistance(lat1, lat2, lon1, lon2) {
 		return(c * r);
 	}
 
+
+export const getPreviousRun = async () => {
+		try {
+		  const jsonValue = await AsyncStorage.getItem('previousRun')
+		  return jsonValue != null ? JSON.parse(jsonValue) : null
+		} catch(e) {
+		  // read error
+		  console.log(e)
+		}
+	  }
+
+export const storeRun = async (runData) => {
+		try {
+		  const jsonValue = JSON.stringify(runData)
+		  await AsyncStorage.setItem('previousRun', jsonValue)
+		} catch (e) {
+		  // saving error
+		  console.log(e);
+		}
+		console.log('added previous run to local storage');
+	  }

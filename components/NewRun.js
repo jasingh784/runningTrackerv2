@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import * as Location from 'expo-location';
-import { getDistance } from './utils';
-import Timer from './components/Timer';
+import { getDistance } from '../utils';
+import Timer from './Timer';
+import { storeRun } from '../utils';
 
-export default function NewRunScreen() {
+
+export default function NewRun() {
   const [route, setRoute] = useState([]);
   const [errorMsg, setErrorMsg] = useState(null);
   const [speed, setSpeed] = useState(0);
@@ -41,7 +43,7 @@ export default function NewRunScreen() {
       setTotalDistance(totalDistance => totalDistance + distBetweenLastPoints)
     }
     return ()=> {
-      //temporary - when component is unmounted make route an empty array.
+      //not sure if there is any clean up in this effect. i dont think so.
       
     }
   }, [route])
@@ -52,12 +54,6 @@ export default function NewRunScreen() {
   const locationUpdated = (locObject) => {
     console.log('inside locationupdated')
     console.log(locObject)
-    // setRegion({
-    //   latitude: locObject.coords.latitude,
-    //   longitude: locObject.coords.longitude,
-    //   latitudeDelta: 0.001,
-    //   longitudeDelta: 0.001,
-    // })
 
     setRoute(oldRoute => [...oldRoute, {
       latitude: locObject.coords.latitude,
@@ -68,10 +64,18 @@ export default function NewRunScreen() {
 
   }
 
+  //this function is called when user presses End Run.
+  //it puts all the data for the run into one object and 
+  //then stores it in local storage. it only stores the last run
+  //also remves the location subscription so we app can stop tracking 
+  //location
   const endRun = () => {
-    console.log(JSON.stringify(route))
+    let run = {route, totalDistance, speed}
+    console.log(JSON.stringify(run))
+    storeRun(run);
     locationSubscription.remove();
   }
+
 
   let text = 'Waiting..';
   if (errorMsg) {
