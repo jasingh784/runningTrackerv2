@@ -1,9 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
-import { Button, StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import NewRun from './components/NewRun';
 import PreviousRun from './components/PreviousRun';
+import { Provider as PaperProvider, Title, Text } from 'react-native-paper';
 import { myFirebase } from './firebaseConfig';
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite'
 
@@ -31,16 +32,18 @@ export default function App() {
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.upperView}>
-        {running ? <NewRun /> : <PreviousRun /> } 
+    <PaperProvider>
+      <View style={styles.container}>
+        <View style={styles.upperView}>
+          {running ? <NewRun /> : <PreviousRun /> } 
+        </View>
+        <View style={styles.lowerView}>
+          <Pressable onPress={toggleRun} >
+            <MaterialCommunityIcons name="run-fast" size={36} color="black" />
+          </Pressable>
+        </View>
       </View>
-      <View style={styles.lowerView}>
-        <Pressable onPress={toggleRun} >
-          <MaterialCommunityIcons name="run-fast" size={36} color="black" />
-        </Pressable>
-      </View>
-    </View>
+    </PaperProvider>
     
   );
 }
